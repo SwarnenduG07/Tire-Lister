@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Genarator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .image-size {
+            width: 200px;
+          
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray-600 p-5 ">
+
+    <h1 class="text-lime-500 text-4xl font-bold text-center p-14">Meme Generator</h1>
+
+    <!-- // Custom in=mg upload -->
+
+    <div class="upload mp-5 mt-8 p-5">
+        <h2 class="text-white text-3xl font-bold text-center  ">
+            Upload Imeges</h2>
+        <input type="file"  id="imageUpload" accept="image/*" multiple 
+        class="block w-full text-lg text-slate-500 file:mr-4 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-voilate-700 hover:file:gb-violet-100">
+    </div>
+   
+    <div class="images grid grid-cols-8 gap-4 mb-10" id="imageContainer">
+
+        <!-- uploaded image willl be here -->
+
+    </div>
+
+    <!-- custom categories -->
+    <div class="custom-category #mb-5">
+        <h2 class="text-white text-3xl font-bold text-center">Custom Categories</h2>
+        <input type="text" name="" id="categoryName" placeholder="Enter Category Name" class="text-sm p-2"rounded>
+        <input type="color"  id="categoryColor" class="border rounded">
+        <button id="addCategory" class="bg-indigo-700 text-white p-2 rounded p-2 hover:bg-indigo-800">Add Category
+    </button>
+    </div>
+   <!-- add custom category -->
+
+   <div class="categories space-y-4 mt-10 p-8" id="categories">
+
+   </div>
+
+
+ <!-- Commented Code 
+<div class="categories space-y-3 space-y-4 mt-10 p-8 ">
+  <div id="god" class="drop-zone bg-green-300 p-3 flex flex -row space-x-3 overflow-auto">
+    <h2 class=" text-xl font-bold">God</h2>
+  </div>
+
+
+  <div id="decent" class="drop-zone bg-blue-300 p-3 flex flex -row space-x-3 overflow-auto">
+    <h2 class=" text-xl font-bold">Decent</h2>
+  </div>
+  <div id="avarage" class="drop-zone bg-yellow-300 p-3 flex flex -row space-x-3 overflow-auto">
+    <h2 class=" text-xl font-bold">Avarage</h2>
+  </div>
+  <div id="trash" class="drop-zone bg-red-300 p-3 flex flex -row space-x-3 overflow-auto">
+    <h2 class=" text-xl font-bold">Trash</h2>
+  </div>
+  <div id="intolerable" class="drop-zone bg-lime-600 p-3 flex flex -row space-x-3 overflow-auto">
+    <h2 class=" text-xl font-bold">Intolerable</h2>
+  </div>
+
+</div>
+
+
+
+<div class="images mt-10 gird gird-cols-4 gap-4 m-8">
+ 
+    <img width="200px" src="img1.jpeg" id="img1" alt="img1" class="draggable" draggable="true">
+     <img width="200px" src="img2.jpg" id="img2" alt="img2" class="draggable" draggable="true">
+
+    <img width="200px" src="imgg3.jpg" id="imgg3" alt="imgg3" class="draggable" draggable="true">
+
+    <img width="200px" src="img4.jpg" id="img4" alt="img4" class="draggable" draggable="true">
+</div>
+
+-->
+<script>
+    // custom category
+
+    document.getElementById("addCategory").addEventListener
+    ("click" , function () {
+        const categoryName = document.getElementById("categoryName").value.trim();
+        const categoryColor = document.getElementById
+        ("categoryColor").value;
+
+        if (categoryName.length === "") {
+            alert("Please enter a catagory")
+            return
+        }
+
+
+        const categoryContainer = document.getElementById("categories")
+        const newCategory =  document.createElement("div")
+
+        newCategory.classList.add("category", 'drop-zone','flex','flex-row', 'space-x-3', 'p-2', 'overflow-auto')
+        newCategory.style.backgroundColor = categoryColor;
+        newCategory.innerHTML = `<h2 class = "text-xl font-bold p-2">${categoryName}</h2>`;
+        categoryContainer.appendChild(newCategory);
+
+        //category drag and drop
+        newCategory.addEventListener('dragover', event => {
+            event.preventDefault();
+            newCategory.classList.add("bg-gray-400")
+
+        })
+        newCategory.addEventListener("dragleave", event => {
+            event.preventDefault();
+            newCategory.classList.remove('bg-gray-400')
+        })
+
+        newCategory.addEventListener('drop', event => {
+            event.preventDefault();
+            newCategory.classList.remove('bg-gray-400')
+            const id  = event.dataTransfer.getData('text')
+            const draggableElement = document.getElementById(id)
+            newCategory.appendChild(draggableElement)
+        })
+
+    })
+
+ 
+
+
+///img upload
+document.getElementById('imageUpload').addEventListener("change" , function (event) {
+    const imageContainer = document.getElementById("imageContainer");
+    const files = event.target.files;
+
+    for(i = 0; i< files.length; i++) {
+        const file = files[i]
+        const reader = new FileReader();
+
+
+        reader.onload = function (event) {
+            const img  = document.createElement("img");
+            img.src = event.target.result;
+            img.classList.add("draggable" , 'image-size');
+            img.alt = "Uploaded Image";
+            img.id = 'uploadedImage' + i;
+            imageContainer.appendChild(img);
+
+            //drag and drop
+         img.addEventListener('dragstart', event => {
+         event.dataTransfer.setData('text' , event.target.id)
+        })
+
+     }
+
+
+        reader.readAsDataURL(file)
+    }
+
+});
+   
+
+// functional code
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart' , e => {
+            e.dataTransfer.setData('text',e.target.id)
+        })
+    })
+
+        document.querySelectorAll('.drop-zone').forEach(zone=> {
+            zone.addEventListener('dragover',event => {
+                event.preventDefault();
+                zone.classList.add('bg-gray-400')
+            })
+            zone.addEventListener('dragleave', event => {
+                event.preventDefault();
+                zone.classList.remove('bg-gray-400')
+        })
+        zone.addEventListener('drop', event =>{
+            event.preventDefault();
+             zone.classList.remove('bg-gray-400')
+             const  id = event.dataTransfer.getData('text')
+             const draggableElement = document.getElementById(id)
+             zone.appendChild(draggableElement)
+        })
+    })
+       
+
+</script>
+
+</body>
+</html>
